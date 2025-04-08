@@ -1,0 +1,76 @@
+import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    EdgeInsets padding = MediaQuery.paddingOf(context);
+    ThemeData theme = Theme.of(context);
+
+    return Scaffold(
+      body: AnimationLimiter(
+        child: ListView(
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: padding.top + 84,
+            bottom: padding.bottom + 24,
+          ),
+          children:
+              [
+                    Row(
+                      children: [
+                        Image.asset(
+                          'assets/images/logo/ios_tinted_dark.png',
+                          width: 92,
+                          height: 92,
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 14),
+                      child: Text(
+                        'Flutter technical Test',
+                        style: theme.textTheme.titleLarge,
+                      ),
+                    ),
+                    Text(
+                      'Isaac Mauricio',
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 128),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
+                      onPressed: () {},
+                      icon: Icon(Icons.person),
+                      label: Text('Ver usuarios'),
+                    ),
+                  ]
+                  .mapIndexed(
+                    (index, element) => AnimationConfiguration.staggeredList(
+                      position: index,
+                      duration: const Duration(milliseconds: 375),
+                      child: SlideAnimation(
+                        verticalOffset: 50.0,
+                        child: FadeInAnimation(child: element),
+                      ),
+                    ),
+                  )
+                  .toList(),
+        ),
+      ),
+    );
+  }
+}

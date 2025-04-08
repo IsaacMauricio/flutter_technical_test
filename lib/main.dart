@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 
+import 'root.dart';
 import 'services/contracts/user_service_contract.dart';
 import 'services/implementations/user_service.dart';
-import 'technical_test.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,9 +13,7 @@ Future<void> main() async {
 
   _registerServices();
 
-  GetIt.instance.get<UserServiceContract>().fetchUsers();
-
-  runApp(const TechnicalTest());
+  runApp(const Root());
 }
 
 void _registerServices() {
