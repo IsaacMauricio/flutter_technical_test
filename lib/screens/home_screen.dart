@@ -1,6 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/user_list_provider.dart';
+import 'user_list_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -10,7 +15,12 @@ class HomeScreen extends StatelessWidget {
     EdgeInsets padding = MediaQuery.paddingOf(context);
     ThemeData theme = Theme.of(context);
 
+    SystemChrome.setSystemUIOverlayStyle(
+      theme.appBarTheme.systemOverlayStyle ?? SystemUiOverlayStyle(),
+    );
+
     return Scaffold(
+      primary: false,
       body: AnimationLimiter(
         child: ListView(
           padding: EdgeInsets.only(
@@ -24,7 +34,9 @@ class HomeScreen extends StatelessWidget {
                     Row(
                       children: [
                         Image.asset(
-                          'assets/images/logo/ios_tinted_dark.png',
+                          theme.brightness == Brightness.light
+                              ? 'assets/images/logo/ios_tinted_dark.png'
+                              : 'assets/images/logo/ios_tinted_light.png',
                           width: 92,
                           height: 92,
                         ),
@@ -46,14 +58,17 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 128),
                     ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                      ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder:
+                                (context) => ChangeNotifierProvider(
+                                  create: (context) => UserListProvider(),
+                                  child: UserListScreen(),
+                                ),
+                          ),
+                        );
+                      },
                       icon: Icon(Icons.person),
                       label: Text('Ver usuarios'),
                     ),

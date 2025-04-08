@@ -1,5 +1,6 @@
+import '../../models/api_response.dart';
 import '../../models/user.dart';
 
 abstract class UserServiceContract {
-  Future<List<User>?> fetchUsers([int page = 1]);
+  Future<ApiResponse<List<User>>?> fetchUsers([int page = 1]);
 }
