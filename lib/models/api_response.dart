@@ -9,6 +9,8 @@ class ApiResponse<T> {
   int? totalPages;
   T? data;
   Support? support;
+  bool cached;
+  DateTime? cacheDate;
 
   ApiResponse({
     this.page,
@@ -17,6 +19,8 @@ class ApiResponse<T> {
     this.totalPages,
     this.data,
     this.support,
+    this.cached = false,
+    this.cacheDate,
   });
 
   factory ApiResponse.transform(

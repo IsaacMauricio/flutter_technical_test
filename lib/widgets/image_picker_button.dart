@@ -35,17 +35,68 @@ class _ImagePickerButtonState extends State<ImagePickerButton> {
   Future<void> _pickImage() async {
     PermissionsUtil.runtimePermissionWorkflow(
       permission: Permission.camera,
-      onDenied: () async {},
-      showRationale: () async {
-        return false;
+      onDenied: () async {
+        bool openSettings =
+            await showDialog(
+              context: context,
+              builder:
+                  (context) => AlertDialog(
+                    title: Text('Permiso negado'),
+                    content: Text(
+                      'No se concedió el permiso para usar la cámara. Puede abrir los ajustes para conceder este permiso.',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: Text('Cancelar'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: Text('Abrir ajustes'),
+                      ),
+                    ],
+                  ),
+            ) ??
+            false;
+
+        if (openSettings) openAppSettings();
       },
+      showRationale: () async {
+        bool requestAgain =
+            await showDialog(
+              context: context,
+              builder:
+                  (context) => AlertDialog(
+                    title: Text('Permiso de usar cámara'),
+                    content: Text(
+                      'Por favor conceda el permiso para utilizar la camara',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: Text('Cancelar'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: Text('Permitir'),
+                      ),
+                    ],
+                  ),
+            ) ??
+            false;
+
+        return requestAgain;
+      },
+
       onGranted: () async {
         XFile? file = await ImagePicker().pickImage(source: ImageSource.camera);
         if (file == null) return;
 
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => ImageViewerScreen(file)),
-        );
+        if (mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => ImageViewerScreen(file)),
+          );
+        }
       },
     );
   }

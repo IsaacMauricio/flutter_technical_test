@@ -2,7 +2,11 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
+import '../main.dart';
+import '../models/cache_record.dart';
 
 class ConnectivityIndicator extends StatefulWidget {
   const ConnectivityIndicator({super.key});
@@ -29,11 +33,11 @@ class _ConnectivityIndicatorState extends State<ConnectivityIndicator> {
       curve: Curves.easeInOut,
       duration: Duration(seconds: 3000),
       child: Container(
-        color: isConnected ? theme.scaffoldBackgroundColor : Colors.orange,
+        color: isConnected ? theme.scaffoldBackgroundColor : Colors.deepOrange,
         width: double.infinity,
         child:
             isConnected
-                ? SizedBox(width: double.infinity, height: 0,)
+                ? SizedBox(width: double.infinity, height: 0)
                 : Padding(
                   padding: EdgeInsets.only(
                     top: 4,
@@ -42,11 +46,34 @@ class _ConnectivityIndicatorState extends State<ConnectivityIndicator> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Sin conexión',
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: Colors.white,
-                        ),
+                      Column(
+                        children: [
+                          Text(
+                            'Sin conexión',
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Builder(
+                            builder: (context) {
+                              CacheRecord? record =
+                                  objectbox.store
+                                      .box<CacheRecord>()
+                                      .getAll()
+                                      .firstOrNull;
+
+                              if (record == null) return SizedBox();
+
+                              return Text(
+                                'Última actualización ${DateFormat('dd/MM/yy hh:mm:ss z').format(record.date)}',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: Colors.white,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),

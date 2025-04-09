@@ -16,6 +16,9 @@ class Root extends StatelessWidget {
           create: (context) => Connectivity().onConnectivityChanged,
           updateShouldNotify: (previous, current) => true,
         ),
+        ChangeNotifierProvider(
+          create: (context) => ValueNotifier(ThemeMode.system),
+        ),
       ],
       child: TechnicalTest(),
     );

@@ -104,9 +104,57 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
 
     PermissionsUtil.runtimePermissionWorkflow(
       permission: permission,
-      onDenied: () async {},
+      onDenied: () async {
+        bool openSettings =
+            await showDialog(
+              context: context,
+              builder:
+                  (context) => AlertDialog(
+                    title: Text('Permiso negado'),
+                    content: Text(
+                      'No se concedió el permiso para guardar imágenes. Puede abrir los ajustes para conceder este permiso.',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: Text('Cancelar'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: Text('Abrir ajustes'),
+                      ),
+                    ],
+                  ),
+            ) ??
+            false;
+
+        if (openSettings) openAppSettings();
+      },
       showRationale: () async {
-        return false;
+        bool requestAgain =
+            await showDialog(
+              context: context,
+              builder:
+                  (context) => AlertDialog(
+                    title: Text('Permiso de guardar imágenes'),
+                    content: Text(
+                      'Por favor conceda el permiso para guardar esta imagen',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: Text('Cancelar'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: Text('Permitir'),
+                      ),
+                    ],
+                  ),
+            ) ??
+            false;
+
+        return requestAgain;
       },
       onGranted: () async {
         try {
@@ -114,19 +162,23 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
 
           await ImageGallerySaverPlus.saveImage(bytes);
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.green,
-              content: Text('Se ha guardado la imagen'),
-            ),
-          );
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.green,
+                content: Text('Se ha guardado la imagen'),
+              ),
+            );
+          }
         } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.red,
-              content: Text('Ocurrió un error guardando esta imagen'),
-            ),
-          );
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.red,
+                content: Text('Ocurrió un error guardando esta imagen'),
+              ),
+            );
+          }
         }
       },
     );
