@@ -29,7 +29,10 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
     scrollController.addListener(() => setState(() {}));
   }
 
-  double get expandedHeight => MediaQuery.sizeOf(context).height / 4;
+  double get expandedHeight =>
+      MediaQuery.orientationOf(context) == Orientation.portrait
+          ? MediaQuery.sizeOf(context).height / 4
+          : 200;
 
   double get flexibleSpaceExpandedHeightOffset =>
       expandedHeight - kToolbarHeight;
@@ -49,6 +52,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
+    EdgeInsets padding = MediaQuery.paddingOf(context);
 
     return Scaffold(
       body: CustomScrollView(
@@ -99,6 +103,7 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                     left: 16,
                     child: Row(
                       children: [
+                        SizedBox(width: MediaQuery.paddingOf(context).left),
                         Hero(
                           tag: 'avatar_image_${widget.user.id}',
                           child: Container(
@@ -148,7 +153,12 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            padding: EdgeInsets.only(
+              left: max(padding.left, padding.right) + 12,
+              right: max(padding.left, padding.right) + 12,
+              top: 24,
+              bottom: 24,
+            ),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 Text(

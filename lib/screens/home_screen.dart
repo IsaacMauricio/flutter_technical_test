@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,8 +26,9 @@ class HomeScreen extends StatelessWidget {
       body: AnimationLimiter(
         child: ListView(
           padding: EdgeInsets.only(
-            left: 16,
-            right: 16,
+            left: max(padding.left, padding.right) + 12,
+            right: max(padding.left, padding.right) + 12,
+
             top: padding.top,
             bottom: padding.bottom + 24,
           ),
