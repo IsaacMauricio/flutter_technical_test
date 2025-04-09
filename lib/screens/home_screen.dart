@@ -5,6 +5,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/user_list_provider.dart';
+import '../widgets/image_picker_button.dart';
 import 'user_list_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -72,6 +73,8 @@ class HomeScreen extends StatelessWidget {
                       icon: Icon(Icons.person),
                       label: Text('Ver usuarios'),
                     ),
+                    SizedBox(height: 8),
+                    ImagePickerButton.text(),
                   ]
                   .mapIndexed(
                     (index, element) => AnimationConfiguration.staggeredList(

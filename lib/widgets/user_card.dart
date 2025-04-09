@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
 import '../models/user.dart';
 
 class UserCard extends StatelessWidget {
-  const UserCard(this.user, {super.key});
+  const UserCard(this.user, {this.onTap, super.key});
 
   final User user;
+  final void Function(User user)? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -15,13 +17,17 @@ class UserCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: ListTile(
         contentPadding: EdgeInsets.symmetric(horizontal: 4),
-        onTap: () {},
-        leading: CircleAvatar(
-          radius: 32,
-
-          child: ClipOval(
+        onTap: onTap == null ? null : () => onTap!(user),
+        leading: Hero(
+          tag: 'avatar_image_${user.id}',
+          child: Container(
+            width: 64,
+            height: 64,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(shape: BoxShape.circle),
             child: CachedNetworkImage(
               imageUrl: user.avatar ?? '',
+              fit: BoxFit.cover,
               errorWidget: (context, url, error) => Icon(Icons.person_outline),
             ),
           ),

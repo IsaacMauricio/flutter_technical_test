@@ -7,9 +7,12 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../models/api_response.dart';
 import '../models/user.dart';
 import '../services/contracts/user_service_contract.dart';
+import '../widgets/connectivity_indicator.dart';
+import '../widgets/image_picker_button.dart';
 import '../widgets/loading_error_widget.dart';
 import '../widgets/no_items_widget.dart';
 import '../widgets/user_card.dart';
+import 'user_detail_screen.dart';
 
 class UserListScreen extends StatefulWidget {
   const UserListScreen({super.key});
@@ -60,30 +63,48 @@ class _UserListScreenState extends State<UserListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: ImagePickerButton.fab(),
       appBar: AppBar(title: Text('Usuarios')),
-      body: Scrollbar(
-        child: RefreshIndicator(
-          onRefresh: () async => pagingController.refresh(),
-          child: PagedListView<int, User>.separated(
-            padding: EdgeInsets.only(
-              left: 12,
-              right: 12,
-              top: 16,
-              bottom: MediaQuery.paddingOf(context).bottom + 12,
-            ),
-            pagingController: pagingController,
-            separatorBuilder: (context, index) => SizedBox(height: 4),
-            builderDelegate: PagedChildBuilderDelegate(
-              noItemsFoundIndicatorBuilder: (context) => NoItemsWidget(),
-              firstPageErrorIndicatorBuilder:
-                  (context) => LoadingErrorWidget(
-                    onRetry: () => pagingController.refresh(),
+      body: Column(
+        children: [
+          Expanded(
+            child: Scrollbar(
+              child: RefreshIndicator(
+                onRefresh: () async => pagingController.refresh(),
+                child: PagedListView<int, User>.separated(
+                  padding: EdgeInsets.only(
+                    left: 12,
+                    right: 12,
+                    top: 16,
+                    bottom: MediaQuery.paddingOf(context).bottom + 12,
                   ),
-              itemBuilder: (context, item, index) => UserCard(item),
+                  pagingController: pagingController,
+                  separatorBuilder: (context, index) => SizedBox(height: 4),
+                  builderDelegate: PagedChildBuilderDelegate(
+                    noItemsFoundIndicatorBuilder: (context) => NoItemsWidget(),
+                    firstPageErrorIndicatorBuilder:
+                        (context) => LoadingErrorWidget(
+                          onRetry: () => pagingController.refresh(),
+                        ),
+                    itemBuilder:
+                        (context, item, index) => UserCard(
+                          item,
+                          onTap:
+                              (user) => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => UserDetailScreen(user),
+                                ),
+                              ),
+                        ),
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
+          ConnectivityIndicator(),
+        ],
       ),
     );
   }
+
 }
